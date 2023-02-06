@@ -1,4 +1,4 @@
-class Vertice:
+class Vertex:
 
     def __init__(self, name: str, duration: int, predecessors):
         self.name = name
