@@ -1,7 +1,5 @@
 import graph
 
-import inquirer
-
 
 def display_graph(graph_to_display: graph):
     if graph_to_display is None:
