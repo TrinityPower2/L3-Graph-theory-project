@@ -1,16 +1,27 @@
-# This is a sample Python script.
-
-# Press Maj+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+import graph
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+def display_graph(graph_to_display: graph):
+    if graph_to_display is None:
+        return "The graph has not been created yet"
+    else:
+        return "WIP"
 
 
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    print_hi('PyCharm')
+    running = 1
+    active_graph = None
+    while running:
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+        print("What action would you like to perform ?")
+        display_graph(active_graph)
+        print("0. Quit")
+
+        user_input = input()
+
+        match user_input:
+            case 0:
+                print("Goodbye")
+                running = 0
+            case _:
+                print("Unknown action")
