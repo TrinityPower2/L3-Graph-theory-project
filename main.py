@@ -1,5 +1,7 @@
 import graph
 
+import inquirer
+
 
 def display_graph(graph_to_display: graph):
     if graph_to_display is None:
@@ -14,13 +16,13 @@ if __name__ == '__main__':
     while running:
 
         print("What action would you like to perform ?")
-        display_graph(active_graph)
+        print(display_graph(active_graph))
         print("0. Quit")
 
         user_input = input()
 
         match user_input:
-            case 0:
+            case "0":
                 print("Goodbye")
                 running = 0
             case _:
