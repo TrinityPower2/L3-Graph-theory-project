@@ -1,4 +1,5 @@
 import vertex as vx
+from tabulate import tabulate
 
 
 class Graph:
@@ -9,10 +10,9 @@ class Graph:
         predecessors = {}
 
         # We open the good file and read each line, for each, we store the two first values in the vertex object,
-        # and the predecessors in the dictionary using the vertex' name as key.
+        # and the predecessors in the dictionary using the vertexes name as key.
         f = open(filename, "r")
         for line in f.read().split("\n"):
-            print(line)
             line = line.split(" ")
             self.vertices.append(vx.Vertex(line[0], int(line[1])))
             predecessors[line[0]] = line[2:]
@@ -29,9 +29,9 @@ class Graph:
                         temp.predecessors.append(temp_predecessor)
                         temp_predecessor.successors.append(temp)
                     else:
-                        print("Something went wrong finding temp_predecessor of "+vertex)
+                        print("Something went wrong finding temp_predecessor of " + vertex)
             else:
-                print("Something went wrong finding the vertex named "+vertex)
+                print("Something went wrong finding the vertex named " + vertex)
 
     # Allows to get a vertex of the graph from its name.
     def get_vertex(self, name):
@@ -46,5 +46,24 @@ class Graph:
         output = ""
         for vertex in self.vertices:
             for destination in vertex.successors:
-                output += vertex.name + " =" + str(vertex.duration) + "=> " + destination.name + "\n"
+                output += vertex.name + " -> " + destination.name + " = " + str(vertex.duration) + "\n"
         return output
+
+    def get_matrix(self):
+        data = []
+        col_headers = []
+        cpt = -1
+        for vertex in self.vertices:
+            cpt += 1
+            data.append([])
+            data[cpt].append(vertex.name)
+            col_headers.append(vertex.name)
+            for match_vertex in self.vertices:
+                if vertex.successors.__contains__(match_vertex):
+                    data[cpt].append(str(vertex.duration))
+                else:
+                    data[cpt].append("*")
+
+        a = tabulate(data, headers=col_headers, tablefmt="fancy_grid")
+
+        return a
