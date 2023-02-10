@@ -49,21 +49,30 @@ class Graph:
                 output += vertex.name + " -> " + destination.name + " = " + str(vertex.duration) + "\n"
         return output
 
+    # Allow to display a graph with in a matrix form
     def get_matrix(self):
+        # 2D Array that will store the values for each case, including the row headers but excluding the column headers.
         data = []
+        # Array storing the column headers
         col_headers = []
+        # Counter that stores the current row we're at
         cpt = -1
         for vertex in self.vertices:
+            # At each new row (vertex), we increment the counter?
             cpt += 1
+            # At each new row (vertex), we add a new 1D Array to the 2D Array
             data.append([])
+            # At the start of the row, we add a row header, which is the name of the vertex
             data[cpt].append(vertex.name)
+            # Each time we add a new row, we add the matching vertex in the column header list
             col_headers.append(vertex.name)
             for match_vertex in self.vertices:
+                # If the vertex of the row has the match_vertex among its successors, we mark the weight of the edge
+                # in the matching case, else we put "*"
                 if vertex.successors.__contains__(match_vertex):
                     data[cpt].append(str(vertex.duration))
                 else:
                     data[cpt].append("*")
 
-        a = tabulate(data, headers=col_headers, tablefmt="fancy_grid")
-
-        return a
+        # We return the table made by tabulate from the data and column headers.
+        return tabulate(data, headers=col_headers, tablefmt="fancy_grid")

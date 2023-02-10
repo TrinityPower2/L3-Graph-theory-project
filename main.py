@@ -25,6 +25,6 @@ if __name__ == '__main__':
                 print("Goodbye")
                 running = 0
             case "1":
-                active_graph = gr.Graph("hello.txt")
+                active_graph = gr.Graph("test.txt")
             case _:
                 print("Unknown action")
