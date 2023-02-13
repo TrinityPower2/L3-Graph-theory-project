@@ -1,9 +1,12 @@
+import logger
 import vertex as vx
 from tabulate import tabulate
 
 
 class Graph:
     def __init__(self, file):
+
+        self.logger = logger.Logger(file.name)
 
         # We will store the named vertices in the array, and store the matching predecessors in the dictionary.
         self.vertices = []
@@ -28,9 +31,19 @@ class Graph:
                         temp.predecessors.append(temp_predecessor)
                         temp_predecessor.successors.append(temp)
                     else:
-                        print("Something went wrong finding temp_predecessor of " + vertex)
+                        self.logger.log("Something went wrong finding temp_predecessor of " + vertex)
             else:
-                print("Something went wrong finding the vertex named " + vertex)
+                self.logger.log("Something went wrong finding the vertex named " + vertex)
+
+        self.graph_menu()
+
+    def graph_menu(self):
+        running = 1
+        while(running):
+            self.logger.log("What do you wanna do ?")
+            match(input()):
+                case 0: running = 0
+                case _: self.logger.log("Unknown instruction. Please enter a valid instruction.")
 
     # Allows to get a vertex of the graph from its name.
     def get_vertex(self, name):
