@@ -1,9 +1,9 @@
 class Logger:
 
     def __init__(self, subject_filename):
-        self.subject_filename = subject_filename
-        self.savefile = open(subject_filename+"-trace.txt", "x")
+        self.savefile = open("traces/" + subject_filename+"-trace.txt", "w", encoding="utf-8")
 
     def log(self, to_log):
         print(to_log)
-        self.savefile.write(to_log)
+        self.savefile.write(to_log + "\n")
+        return to_log

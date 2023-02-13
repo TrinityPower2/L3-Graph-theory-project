@@ -6,7 +6,9 @@ from tabulate import tabulate
 class Graph:
     def __init__(self, file):
 
-        self.logger = logger.Logger(file.name)
+        self.graph_name = file.name.split("/")[-1].split(".")[0]
+
+        self.logger = logger.Logger(self.graph_name)
 
         # We will store the named vertices in the array, and store the matching predecessors in the dictionary.
         self.vertices = []
@@ -37,13 +39,20 @@ class Graph:
 
         self.graph_menu()
 
+    # Loop that will persist while we are observing this graph. When we get out, the graph will be dropped.
     def graph_menu(self):
         running = 1
-        while(running):
-            self.logger.log("What do you wanna do ?")
-            match(input()):
-                case 0: running = 0
-                case _: self.logger.log("Unknown instruction. Please enter a valid instruction.")
+        while running:
+            self.logger.log("\n==============================")
+            self.logger.log("\nCURRENT MATRIX : " + self.graph_name)
+            self.logger.log(self.get_matrix())
+            self.logger.log("\nWhat do you wanna do ? (Press ENTER to return to menu)")
+            while 1:
+                match(self.logger.log(input())):
+                    case "":
+                        running = 0
+                        break
+                    case _: self.logger.log("Unknown command.")
 
     # Allows to get a vertex of the graph from its name.
     def get_vertex(self, name):
