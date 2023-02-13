@@ -3,7 +3,7 @@ from tabulate import tabulate
 
 
 class Graph:
-    def __init__(self, filename: str):
+    def __init__(self, file):
 
         # We will store the named vertices in the array, and store the matching predecessors in the dictionary.
         self.vertices = []
@@ -11,8 +11,7 @@ class Graph:
 
         # We open the good file and read each line, for each, we store the two first values in the vertex object,
         # and the predecessors in the dictionary using the vertexes name as key.
-        f = open(filename, "r")
-        for line in f.read().split("\n"):
+        for line in file.read().split("\n"):
             line = line.split(" ")
             self.vertices.append(vx.Vertex(line[0], int(line[1])))
             predecessors[line[0]] = line[2:]
