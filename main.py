@@ -38,7 +38,6 @@ if __name__ == '__main__':
                     break
                 case "1":
                     try:
-                        print("yo")
                         active_graph = gr.Graph(open(file_opener(root), "r"))
                     except FileNotFoundError:
                         print("File not found !")
