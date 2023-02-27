@@ -1,4 +1,5 @@
 import os
+import sys
 import graph as gr
 
 import tkinter as tk
@@ -16,14 +17,16 @@ def file_opener(root_window):
     return path
 
 
-if __name__ == '__main__':
-
+def main():
     # Creates the tkinter window (necessary to summon the file selector)
     root = tk.Tk()
-    # Hides the tkinter window
-    root.wm_attributes('-alpha', 0.0)
-    # Disables the tkinter windows' button
-    root.wm_attributes('-disabled', True)
+    if 'linux' in sys.platform:
+        root.withdraw()
+    else :
+        # Hides the tkinter window
+        root.wm_attributes('-alpha', 0.0)
+        # Disables the tkinter windows' button
+        root.wm_attributes('-disabled', True)
 
     running = 1
     while running:
@@ -44,3 +47,7 @@ if __name__ == '__main__':
                     break
                 case _:
                     print("Unknown action")
+
+
+if __name__ == '__main__':
+    main()
