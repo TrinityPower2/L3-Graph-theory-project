@@ -43,7 +43,7 @@ def main():
                     try:
                         active_graph = gr.Graph(open(file_opener(root), "r"))
                     except FileNotFoundError:
-                        print("File not found !")
+                        print("Graph file not found !")
                     break
                 case _:
                     print("Unknown action")
