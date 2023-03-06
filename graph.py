@@ -96,4 +96,4 @@ class Graph:
                     data[cpt].append("*")
 
         # We return the table made by tabulate from the data and column headers.
-        return tabulate(data, headers=col_headers, tablefmt="fancy_grid")
+        return tabulate(data, headers=col_headers, tablefmt="grid")
