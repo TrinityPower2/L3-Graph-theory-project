@@ -42,6 +42,8 @@ def main():
                 case "1":
                     try:
                         active_graph = gr.Graph(open(file_opener(root), "r"))
+                    except VertexNotFoundError:
+                        print("A vertex was not found !")
                     except FileNotFoundError:
                         print("Graph file not found !")
                     break

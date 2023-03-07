@@ -14,28 +14,42 @@ class Graph:
         self.vertices = []
         predecessors = {}
 
+        # We add alpha vertex.
+        self.vertices.append(vx.Vertex("A", 0))
+
         # We open the good file and read each line, for each, we store the two first values in the vertex object,
         # and the predecessors in the dictionary using the vertexes name as key.
+
         for line in file.read().split("\n"):
             line = line.split(" ")
             self.vertices.append(vx.Vertex(line[0], int(line[1])))
             predecessors[line[0]] = line[2:]
+
+        # We add omega vertex.
+        self.vertices.append(vx.Vertex("W", 0))
 
         # Once every vertex has been created, we will fill the successors and predecessors array in each vertex object.
         # We will navigate the dictionary, and fetch the good objects to fill the predecessors and successors.
         # At each get_vertex() call, we verify if output is non-null to avoid crashes.
         for vertex in predecessors.keys():
             temp = self.get_vertex(vertex)
-            if temp:
-                for predecessor in predecessors.get(vertex):
-                    temp_predecessor = self.get_vertex(predecessor)
-                    if temp_predecessor:
-                        temp.predecessors.append(temp_predecessor)
-                        temp_predecessor.successors.append(temp)
-                    else:
-                        self.logger.log("Something went wrong finding temp_predecessor of " + vertex)
-            else:
-                self.logger.log("Something went wrong finding the vertex named " + vertex)
+            for predecessor in predecessors.get(vertex):
+                temp_predecessor = self.get_vertex(predecessor)
+                temp.predecessors.append(temp_predecessor)
+                temp_predecessor.successors.append(temp)
+
+        # Adding Alpha predecessor for vertices with no predecessor and Omega successor for vertices with no sucessor.
+
+        for vertex in self.vertices:
+            if not vertex.predecessors:
+                alpha = self.get_vertex("A")
+                vertex.predecessors.append(alpha)
+                alpha.successors.append(vertex)
+
+            if not vertex.successors:
+                omega = self.get_vertex("W")
+                vertex.predecessors.append(omega)
+                omega.successors.append(vertex)
 
         self.graph_menu()
 
@@ -48,11 +62,12 @@ class Graph:
             self.logger.log(self.get_matrix())
             self.logger.log("\nWhat do you wanna do ? (Press ENTER to return to menu)")
             while 1:
-                match(self.logger.log(input())):
+                match (self.logger.log(input())):
                     case "":
                         running = 0
                         break
-                    case _: self.logger.log("Unknown command.")
+                    case _:
+                        self.logger.log("Unknown command.")
 
     # Allows to get a vertex of the graph from its name.
     def get_vertex(self, name):
@@ -60,7 +75,8 @@ class Graph:
             if vertex.name == name:
                 return vertex
 
-        return None
+        self.logger.log("Vertex " + name + " was not found !")
+        raise VertexNotFoundError("Vertex " + name + " was not found !")
 
     # Allows to display a graph by the successions in a predecessor =length=> successor pattern.
     def get_successions(self):
@@ -97,3 +113,8 @@ class Graph:
 
         # We return the table made by tabulate from the data and column headers.
         return tabulate(data, headers=col_headers, tablefmt="grid")
+
+
+# Exception to manage cases when a vertex is not found.
+class VertexNotFoundError(Exception):
+    pass
