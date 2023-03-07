@@ -38,18 +38,18 @@ class Graph:
                 temp.predecessors.append(temp_predecessor)
                 temp_predecessor.successors.append(temp)
 
-        # Adding Alpha predecessor for vertices with no predecessor and Omega successor for vertices with no sucessor.
+        # Adding Alpha predecessor for vertices with no predecessor and Omega successor for vertices with no successor.
 
         for vertex in self.vertices:
-            if not vertex.predecessors:
+            if not vertex.predecessors and vertex.name != "A" and vertex.name != "W":
                 alpha = self.get_vertex("A")
                 vertex.predecessors.append(alpha)
                 alpha.successors.append(vertex)
 
-            if not vertex.successors:
+            if not vertex.successors and vertex.name != "A" and vertex.name != "W":
                 omega = self.get_vertex("W")
-                vertex.predecessors.append(omega)
-                omega.successors.append(vertex)
+                vertex.successors.append(omega)
+                omega.predecessors.append(vertex)
 
         self.graph_menu()
 
