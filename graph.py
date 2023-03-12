@@ -59,7 +59,7 @@ class Graph:
         while running:
             self.logger.log("\n==============================")
             self.logger.log("\nCURRENT MATRIX : " + self.graph_name)
-            self.logger.log(self.get_matrix())
+            self.logger.log(self.get_adjacency_matrix())
             self.logger.log("\nWhat do you wanna do ? (Press ENTER to return to menu)")
             while 1:
                 match (self.logger.log(input())):
@@ -87,7 +87,7 @@ class Graph:
         return output
 
     # Allow to display a graph with in a matrix form
-    def get_matrix(self):
+    def get_adjacency_matrix(self):
         # 2D Array that will store the values for each case, including the row headers but excluding the column headers.
         data = []
         # Array storing the column headers
