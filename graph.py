@@ -131,6 +131,7 @@ class Graph:
         # We return the table made by tabulate from the data and column headers.
         return tabulate(data, headers=col_headers, tablefmt="grid")
 
+
 # Exception to manage cases when a vertex is not found.
 class VertexNotFoundError(Exception):
     pass
