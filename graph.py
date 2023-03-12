@@ -51,6 +51,9 @@ class Graph:
                 vertex.successors.append(omega)
                 omega.predecessors.append(vertex)
 
+        self.adjacency_matrix = []
+        self.compute_adjacency_matrix()
+
         self.graph_menu()
 
     # Loop that will persist while we are observing this graph. When we get out, the graph will be dropped.
@@ -59,8 +62,8 @@ class Graph:
         while running:
             self.logger.log("\n==============================")
             self.logger.log("\nCURRENT MATRIX : " + self.graph_name)
-            self.logger.log(self.get_adjacency_matrix())
-            self.logger.log("\nWhat do you wanna do ? (Press ENTER to return to menu)")
+            self.logger.log(self.print_adjacency_matrix())
+            self.logger.log("\nWhat do you want to do ? (Press ENTER to return to menu)")
             while 1:
                 match (self.logger.log(input())):
                     case "":
@@ -86,12 +89,10 @@ class Graph:
                 output += vertex.name + " -> " + destination.name + " = " + str(vertex.duration) + "\n"
         return output
 
-    # Allow to display a graph with in a matrix form
-    def get_adjacency_matrix(self):
+    # Used to compute adjacency matrix from the graph object
+    def compute_adjacency_matrix(self):
         # 2D Array that will store the values for each case, including the row headers but excluding the column headers.
         data = []
-        # Array storing the column headers
-        col_headers = []
         # Counter that stores the current row we're at
         cpt = -1
         for vertex in self.vertices:
@@ -100,9 +101,6 @@ class Graph:
             # At each new row (vertex), we add a new 1D Array to the 2D Array
             data.append([])
             # At the start of the row, we add a row header, which is the name of the vertex
-            data[cpt].append(vertex.name)
-            # Each time we add a new row, we add the matching vertex in the column header list
-            col_headers.append(vertex.name)
             for match_vertex in self.vertices:
                 # If the vertex of the row has the match_vertex among its successors, we mark the weight of the edge
                 # in the matching case, else we put "*"
@@ -112,8 +110,26 @@ class Graph:
                     data[cpt].append("*")
 
         # We return the table made by tabulate from the data and column headers.
-        return tabulate(data, headers=col_headers, tablefmt="grid")
+        self.adjacency_matrix = data
 
+    # Allow to display the adjacency matrix of the graph
+    def print_adjacency_matrix(self):
+        # We copy the adjacency matrix to which we will add row headers.
+        data = self.adjacency_matrix
+        # Array storing the column headers
+        col_headers = []
+        # Counter that stores the current row we're at
+        cpt = -1
+        for vertex in self.vertices:
+            # At each new row (vertex), we increment the counter?
+            cpt += 1
+            # At the start of the row, we add a row header, which is the name of the vertex
+            data[cpt].insert(0, vertex.name)
+            # Each time we add a new row, we add the matching vertex in the column header list
+            col_headers.append(vertex.name)
+
+        # We return the table made by tabulate from the data and column headers.
+        return tabulate(data, headers=col_headers, tablefmt="grid")
 
 # Exception to manage cases when a vertex is not found.
 class VertexNotFoundError(Exception):
