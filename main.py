@@ -34,22 +34,20 @@ def main():
         print("0. Quit")
         print("1. Import Graph\n")
         while 1:
-            match input():
-                case "0":
-                    print("Goodbye")
-                    running = 0
-                    break
-                case "1":
-                    try:
-                        active_graph = gr.Graph(open(file_opener(root), "r"))
-                        del active_graph
-                    except gr.VertexNotFoundError:
-                        print("A vertex was not found !")
-                    except FileNotFoundError:
-                        print("Graph file not found !")
-                    break
-                case _:
-                    print("Unknown action")
+            user_input = input()
+            if user_input == "0":
+                print("Goodbye")
+                running = 0
+            elif user_input == "1":
+                try:
+                    active_graph = gr.Graph(open(file_opener(root), "r"))
+                    del active_graph
+                except gr.VertexNotFoundError:
+                    print("A vertex was not found !")
+                except FileNotFoundError:
+                    print("Graph file not found !")
+            else:
+                print("Unknown action")
 
 
 if __name__ == '__main__':

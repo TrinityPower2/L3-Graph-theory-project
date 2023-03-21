@@ -1,8 +1,7 @@
 import logger
 import vertex as vx
 from tabulate import tabulate
-import dates
-
+import dates as dt
 
 class Graph:
     def __init__(self, file):
@@ -54,7 +53,7 @@ class Graph:
 
         self.adjacency_matrix = []
         self.compute_adjacency_matrix()
-
+        print(dt.latest_date(self))
         self.graph_menu()
 
     # Loop that will persist while we are observing this graph. When we get out, the graph will be dropped.
@@ -66,12 +65,11 @@ class Graph:
             self.logger.log(self.print_adjacency_matrix())
             self.logger.log("\nWhat do you want to do ? (Press ENTER to return to menu)")
             while 1:
-                match (self.logger.log(input())):
-                    case "":
-                        running = 0
-                        break
-                    case _:
-                        self.logger.log("Unknown command.")
+                user_input = self.logger.log(input())
+                if user_input ==  "":
+                    running = 0
+                else:
+                    self.logger.log("Unknown command.")
 
     # Allows to get a vertex of the graph from its name.
     def get_vertex(self, name):

@@ -79,3 +79,23 @@ def earliest_date(g, vertex=-1, display=False) -> int:
         return durations[len(g.adjacency_matrix)-1]
     else:
         return durations[vertex]
+
+
+def latest_date(g, display = False) -> dict:
+    """Return the latest date for a vertex"""
+    earliestD = get_durations(g, display)
+    print(earliestD)
+    w = len(g.adjacency_matrix)-1
+    maxD = {w:earliestD[w]}
+    
+    ranks = get_ranks(g)
+    for r in range(len(ranks)-1,-1,-1):
+        for vertex in ranks[r]:
+            earliest_succD = earliestD[w]
+            for i in range(w+1):
+                if g.adjacency_matrix[vertex][i] != '*':
+                    if earliest_succD > maxD[i] - int(g.adjacency_matrix[vertex][i]):
+                        earliest_succD = maxD[i] - int(g.adjacency_matrix[vertex][i])
+            maxD[vertex] = earliest_succD
+    return maxD
+    
