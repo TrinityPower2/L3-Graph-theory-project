@@ -1,48 +1,51 @@
-def has_cycle_plus_ranks(AM, version):
+def has_cycle_plus_ranks(AM, version: bool):
+    '''
+
+    :param AM: the adjacency matrix (square integer matrix)
+    :param version: tells which version of the function use (the one with only cycle detection or the one with ranks)
+    :return: either return a single boolean or a tuple containing a boolean and a dictionary containing the ranks
+    '''
+
     # 1st version where we don't need to compute the ranks. It uses Roy Warshall algorithm
-    if version == 0:
-        trans_clos = transition_closure_AM(AM)
-        for i in range(0, len(AM)):
+    if version:
+        trans_clos = transition_closure_AM(AM)      # We compute the transitive closure of the matrix
+        for i in range(0, len(AM)):     # We check if there are 1 on the diagonal of the transitive closure. If yes, we
+            # have a cycle
             if AM[i][i] != 0:
                 return True
         return False
     # 2nd version where we will search for cycles and compute ranks at the same time
-    elif version == 1:
+    else:
         matrix_len = len(AM)
-        ranks = {0: ""}
-        nb_rk = 0
+        ranks = {0: [0], 1: []}     # Will be used to store the ranks
+        nb_rk = 1
         change = True
-        removed = []
-        while change and len(removed) != matrix_len:
+        removed = [0]        # Will be used to store the vertices we remove
+        while change and len(removed) != matrix_len:    # We stop either when we get no changes or when we removed all
+            # vertices
             change = False
             to_be_removed = []
             for j in range(0, matrix_len):
-                if is_zeros(get_column(AM, j)):
+                if is_zeros(get_column(AM, j)):    # If a vertex has its column in the matrix with only 0, we remove it
                     if j not in removed:
                         change = True
                         to_be_removed.append(j)
                         removed.append(j)
-                        if ranks[nb_rk] == "":
-                            ranks[nb_rk] = str(j)
-                        else:
-                            ranks[nb_rk] = ranks[nb_rk] + " " + str(j)
-            if change:
+                        ranks[nb_rk].append(j)    # The vertex removed will be assigned its rank with the value of nb_rk
+            if change:      # If we removed one or several columns, we need to update the matrix and the value of nb_rk
                 for col in to_be_removed:
                     for i in range(0, len(AM)):
                         AM[col][i] = 0
                 nb_rk += 1
-                ranks[nb_rk] = ""
-        if len(removed) == matrix_len:
-            print("Here are the ranks:\n")
-            for i in range(0, len(ranks.keys())):
-                if ranks[i] != "":
-                    print("rank", i, ":", ranks[i])
-            return False
+                ranks[nb_rk] = []
+        if len(removed) == matrix_len:      # At the end, if we removed all the vertices, it means we have no cycles
+            ranks[nb_rk].append(int(matrix_len))    # Append the omega vertex at the end
+            return False, ranks
         else:
             return True
 
 
-def get_column(AM, col_nb):
+def get_column(AM, col_nb):         # return the column in the matrix of a given vertex
     col = []
     matrix_len = len(AM)
     for i in range(0, matrix_len):
@@ -50,14 +53,14 @@ def get_column(AM, col_nb):
     return col
 
 
-def is_zeros(col):
+def is_zeros(col):                  # check if a given column has only zeros in it
     for i in col:
         if i != 0:
             return False
     return True
 
 
-def transition_closure_AM(init_AM):
+def transition_closure_AM(init_AM):      # compute the transitive closure of a given matrix
     closure_AM = init_AM
     length = len(closure_AM)
     for i in range(0, length):
@@ -71,7 +74,7 @@ def transition_closure_AM(init_AM):
     return closure_AM
 
 
-def get_predecessors(AM, vertice_nb):
+def get_predecessors(AM, vertice_nb):       # Get all the predecessors of a given vertex using a given matrix
     length = len(AM)
     results = []
     results_l = 0
@@ -81,7 +84,7 @@ def get_predecessors(AM, vertice_nb):
     return results
 
 
-def get_successors(AM, vertice_nb):
+def get_successors(AM, vertice_nb):         # Get all the successors of a given vertex using a given matrix
     length = len(AM)
     results = []
     results_l = 0
@@ -90,18 +93,5 @@ def get_successors(AM, vertice_nb):
             results.append(i)
     return results
 
+# All tests on test files done, both algo work ; Problems : original matrix (outside fct) modified
 
-AM = [[0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 1],
-      [0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0],
-      [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1],
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-      [1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1],
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
-      [0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
-AM2 = [[0, 2], [4, 0]]
-print(has_cycle_plus_ranks(AM2, 1))
