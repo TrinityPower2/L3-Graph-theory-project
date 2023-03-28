@@ -99,3 +99,10 @@ def latest_date(g, display = False) -> dict:
             maxD[vertex] = earliest_succD
     return maxD
     
+def floats(g, display = False) -> dict:
+    latestD= latest_date(g, display= False)
+    earliestD= get_durations(g, display=False)
+    for v in earliest_date:
+        float[v]= earliestD[v]- latestD[v]
+    print(float)
+    return float
