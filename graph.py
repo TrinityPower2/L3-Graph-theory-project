@@ -53,7 +53,6 @@ class Graph:
 
         self.adjacency_matrix = []
         self.compute_adjacency_matrix()
-        print(dt.latest_date(self))
         self.graph_menu()
 
     # Loop that will persist while we are observing this graph. When we get out, the graph will be dropped.
@@ -64,10 +63,14 @@ class Graph:
             self.logger.log("\nCURRENT MATRIX : " + self.graph_name)
             self.logger.log(self.print_adjacency_matrix())
             self.logger.log("\nWhat do you want to do ? (Press ENTER to return to menu)")
+            self.logger.log("1 : compute earliest dates")
+            self.logger.log("2 : compute latest dates")
+            self.logger.log("3 : compute floats")
             while 1:
                 user_input = self.logger.log(input())
                 if user_input ==  "":
                     running = 0
+                    break
                 else:
                     self.logger.log("Unknown command.")
 

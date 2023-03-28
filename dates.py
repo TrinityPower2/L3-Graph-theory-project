@@ -1,4 +1,5 @@
 import graph
+from tabulate import tabulate
 
 
 def get_predecessors(g) -> dict:
@@ -6,15 +7,17 @@ def get_predecessors(g) -> dict:
     Return a dictionnary of type {vertex: [predecessors], ...}
     """
     predecessors = {}
+    n_vertices = len(g.adjacency_matrix) # number of vertices
 
-    n_vertices = len(g.adjacency_matrix)
-
+    # generate structure of predecessors
     for i in range(n_vertices):
         predecessors[i] = []
+    
+    # for each vertex
     for r in range(n_vertices) :
         for c in range(n_vertices):
-            if g.adjacency_matrix[r][c] != '*':
-                predecessors[c].append(r)
+            if g.adjacency_matrix[r][c] != '*': # if c in successors of r
+                predecessors[c].append(r) # add vertex r to predecessors of c
 
     return predecessors
 
@@ -25,84 +28,121 @@ def get_ranks(g, display=False) -> list:
         using Roy-Warshall algorithm
         """
         predecessors = get_predecessors(g)
-        n_vertices = len(g.adjacency_matrix)
-        
+        n_vertices = len(g.adjacency_matrix) # number of vertices
         
         ranks = []
-        n = 0
-        while len(predecessors) > 0:
+        n = 0 # counter for the rank (if display)
+        while len(predecessors) > 0: # until no vertex is left
             if display == True:
-                print("\nstates : ", predecessors)
-                
+                print("\nRemaining vertices : ", predecessors)
+            
+            # acknoledge vertices that have no predecessors
             toDelete = []
             for v in predecessors.keys():
                 if len(predecessors[v]) == 0:
                     toDelete.append(v)
 
-            ranks.append(toDelete)
+            ranks.append(toDelete) # ranks 
+
             for td in toDelete:
                 for i in range(n_vertices):
                     if g.adjacency_matrix[td][i] != '*':
-                        predecessors[i].remove(td)
-                del predecessors[td]    
+                        predecessors[i].remove(td) # delete useless edges
+                del predecessors[td] # delete vertex
 
             if display == True: 
-                print("rank ", n, " : ", ranks[-1])
+                print("Vertices of rank ", n, " : ", ranks[-1])
                 n += 1
+        
         return ranks
 
 
-def get_durations(g, display=False) -> dict:
+def earliest_dates(g, display=False) -> list:
     """
     Return the duration to get to each vertex
     """
     ranks = get_ranks(g)
     predecessors = get_predecessors(g)
-    durations = {0:0}
+    earliestD = {0:0}
 
     for rv in ranks[1:]:
         for vertex in rv:
-            durations[vertex] = durations[predecessors[vertex][0]] + int(g.adjacency_matrix[predecessors[vertex][0]][vertex])
-            for p in predecessors[vertex]:
-                if int(g.adjacency_matrix[p][vertex]) + durations[p] > durations[predecessors[vertex][0]] :
-                    durations[vertex] = int(g.adjacency_matrix[p][vertex]) + durations[p]
-    return durations
+            # maximum("earliest date" in predecessors + duration of edge) -> earliest date of vertex
+            earliestD[vertex] = earliestD[predecessors[vertex][0]] 
+            earliestD[vertex] += int(g.adjacency_matrix[predecessors[vertex][0]][vertex])
+            for p in predecessors[vertex][1:]:
+                if int(g.adjacency_matrix[p][vertex]) + earliestD[p] > earliestD[predecessors[vertex][0]] :
+                    earliestD[vertex] = int(g.adjacency_matrix[p][vertex]) + earliestD[p]
+
+    # print the tabulate version
+    if display:
+        col_headers = [str(i) for i in range(len(earliestD))]
+        col_headers[0] = "A"
+        col_headers[-1] = "W"
+        values = [[str(earliestD[v]) for v in sorted(earliestD)]]
+        values[0].insert(0, "Earliest dates")
+        print(tabulate(values, headers=col_headers, tablefmt="grid"))
+
+    return [earliestD[v] for v in sorted(earliestD)]
 
 
-def earliest_date(g, vertex=-1, display=False) -> int:
+def latest_dates(g, display = False) -> list:
     """
-    Return the earliest date for a vertex
+    Return the latest date for a vertex
     """
-    durations = get_durations(g, display=display)
-
-    if vertex == -1:
-        return durations[len(g.adjacency_matrix)-1]
-    else:
-        return durations[vertex]
-
-
-def latest_date(g, display = False) -> dict:
-    """Return the latest date for a vertex"""
-    earliestD = get_durations(g, display)
-    print(earliestD)
-    w = len(g.adjacency_matrix)-1
-    maxD = {w:earliestD[w]}
-    
+    earliestD = earliest_dates(g)
+    w = len(g.adjacency_matrix)-1 # number of vertex the W
+    latestD = {w:earliestD[w]}
     ranks = get_ranks(g)
-    for r in range(len(ranks)-1,-1,-1):
+
+    for r in range(len(ranks)-1, -1 , -1): # loop from highest to lowest ranks
         for vertex in ranks[r]:
-            earliest_succD = earliestD[w]
-            for i in range(w+1):
+            earliest_succD = earliestD[w] # is latest date in the graph
+
+            # minimum "earliest date" in successors -> latest date of latestD[vertex]
+            for i in range(w+1): 
                 if g.adjacency_matrix[vertex][i] != '*':
-                    if earliest_succD > maxD[i] - int(g.adjacency_matrix[vertex][i]):
-                        earliest_succD = maxD[i] - int(g.adjacency_matrix[vertex][i])
-            maxD[vertex] = earliest_succD
-    return maxD
+                    if earliest_succD > latestD[i] - int(g.adjacency_matrix[vertex][i]):
+                        earliest_succD = latestD[i] - int(g.adjacency_matrix[vertex][i])
+            latestD[vertex] = earliest_succD
+
+    # print the tabulate version
+    if display:
+        col_headers = [str(i) for i in range(len(latestD))]
+        col_headers[0] = "A"
+        col_headers[-1] = "W"
+        values = [[str(v) for v in earliestD],
+                  [str(latestD[v]) for v in sorted(latestD)]]
+        values[0].insert(0,"Earliest dates")
+        values[1].insert(0,"Latest dates")
+        print(tabulate(values, headers=col_headers, tablefmt="grid"))
+
+    return [latestD[v] for v in sorted(latestD)]
+
     
-def floats(g, display = False) -> dict:
-    latestD= latest_date(g, display= False)
-    earliestD= get_durations(g, display=False)
-    for v in earliest_date:
-        float[v]= earliestD[v]- latestD[v]
-    print(float)
-    return float
+def floats(g, display = False) -> list:
+    """
+    Return the difference between latest dates and earliest_dates
+    """
+    latestD = latest_dates(g)
+    earliestD = earliest_dates(g)
+    floatD = []
+
+    # difference between earliest date and latest date for each vertex
+    for i in range(len(earliestD)):
+        floatD.append(latestD[i]- earliestD[i])
+
+    # print the tabulate version
+    if display: 
+        col_headers = [str(i) for i in range(len(floatD))]
+        col_headers[0] = "A"
+        col_headers[-1] = "W"
+        col_headers.insert(0, "")
+        values = [earliestD.copy(), latestD.copy(), floatD.copy()]
+        values[0].insert(0, "Earliest Dates")
+        values[1].insert(0, "Latest Dates")
+        values[2].insert(0, "Floats")
+
+        print(tabulate(values, headers=col_headers, tablefmt="grid"))
+
+    return floatD
