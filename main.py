@@ -41,7 +41,9 @@ def main():
             elif user_input == "1":
                 try:
                     active_graph = gr.Graph(open(file_opener(root), "r"))
+                    active_graph.graph_menu()
                     del active_graph
+                    break
                 except gr.VertexNotFoundError:
                     print("A vertex was not found !")
                 except FileNotFoundError:

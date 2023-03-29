@@ -2,6 +2,9 @@ import logger
 import vertex as vx
 from tabulate import tabulate
 import dates as dt
+import cycle_detection as cd
+import negative_edge_detection as nd
+import copy
 
 class Graph:
     def __init__(self, file):
@@ -53,26 +56,23 @@ class Graph:
 
         self.adjacency_matrix = []
         self.compute_adjacency_matrix()
-        self.graph_menu()
 
     # Loop that will persist while we are observing this graph. When we get out, the graph will be dropped.
     def graph_menu(self):
-        running = 1
-        while running:
-            self.logger.log("\n==============================")
-            self.logger.log("\nCURRENT MATRIX : " + self.graph_name)
-            self.logger.log(self.print_adjacency_matrix())
-            self.logger.log("\nWhat do you want to do ? (Press ENTER to return to menu)")
-            self.logger.log("1 : compute earliest dates")
-            self.logger.log("2 : compute latest dates")
-            self.logger.log("3 : compute floats")
-            while 1:
-                user_input = self.logger.log(input())
-                if user_input ==  "":
-                    running = 0
-                    break
-                else:
-                    self.logger.log("Unknown command.")
+        self.logger.log("\n==============================")
+        self.logger.log("\nCURRENT GRAPH : " + self.graph_name)
+        self.logger.log(self.print_adjacency_matrix())
+        if cd.has_cycle_plus_ranks(self.adjacency_matrix, True):
+            self.logger.log("THIS GRAPH CONTAINS CYCLES AND THEREFORE NOT A SCHEDULING GRAPH !")
+        else:
+            if nd.has_negative_edge(self):
+                self.logger.log("THIS GRAPH CONTAINS NEGATIVE EDGES AND THEREFORE NOT A SCHEDULING GRAPH !")
+            else:
+                self.logger.log("THIS CONTAINS NO CYCLE NOR NEGATIVE VALUES AND THEREFORE A SCHEDULING GRAPH !")
+                self.logger.log(dt.critical_path(self, dt.floats(self, display=True)))
+
+        print("\n(Press ENTER to return to menu)") # We don't really want that in the logs
+        input()
 
     # Allows to get a vertex of the graph from its name.
     def get_vertex(self, name):
@@ -117,7 +117,7 @@ class Graph:
     # Allow to display the adjacency matrix of the graph
     def print_adjacency_matrix(self):
         # We copy the adjacency matrix to which we will add row headers.
-        data = self.adjacency_matrix
+        data = copy.deepcopy(self.adjacency_matrix)
         # Array storing the column headers
         col_headers = []
         # Counter that stores the current row we're at
