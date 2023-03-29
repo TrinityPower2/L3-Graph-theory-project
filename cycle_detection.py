@@ -1,14 +1,12 @@
 import copy
-from copy import deepcopy
 
 
 def has_cycle_plus_ranks(AM, version: bool):
-    '''
-
+    """
     :param AM: the adjacency matrix (square string matrix)
     :param version: tells which version of the function use (the one with only cycle detection or the one with ranks)
     :return: either return a single boolean or a tuple containing a boolean and a dictionary containing the ranks
-    '''
+    """
 
     AM_copy = copy.deepcopy(AM)     # Avoid to modify the matrix outside the function
     # 1st version where we don't need to compute the ranks. It uses Roy Warshall algorithm
@@ -115,4 +113,3 @@ am = [['*', '0', '0', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*'],
       ['*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*']]
 print(has_cycle_plus_ranks(am, True))   # Without ranks
 print(has_cycle_plus_ranks(am, False))  # With ranks
-

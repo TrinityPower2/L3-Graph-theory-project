@@ -6,6 +6,7 @@ import cycle_detection as cd
 import negative_edge_detection as nd
 import copy
 
+
 class Graph:
     def __init__(self, file):
 
@@ -63,16 +64,13 @@ class Graph:
         self.logger.log("\nCURRENT GRAPH : " + self.graph_name)
         self.logger.log(self.print_adjacency_matrix())
         if cd.has_cycle_plus_ranks(self.adjacency_matrix, True):
-            self.logger.log("THIS GRAPH CONTAINS CYCLES AND THEREFORE NOT A SCHEDULING GRAPH !")
+            self.logger.log("\nTHIS GRAPH CONTAINS CYCLES AND THEREFORE IS NOT A SCHEDULING GRAPH !\n")
         else:
             if nd.has_negative_edge(self):
-                self.logger.log("THIS GRAPH CONTAINS NEGATIVE EDGES AND THEREFORE NOT A SCHEDULING GRAPH !")
+                self.logger.log("\nTHIS GRAPH CONTAINS NEGATIVE EDGES AND THEREFORE IS NOT A SCHEDULING GRAPH !\n")
             else:
-                self.logger.log("THIS CONTAINS NO CYCLE NOR NEGATIVE VALUES AND THEREFORE A SCHEDULING GRAPH !")
-                dt.critical_path(self, dt.floats(self, display=True),display=True)
-
-        print("\n(Press ENTER to return to menu)") # We don't really want that in the logs
-        input()
+                self.logger.log("\nTHIS CONTAINS NO CYCLE NOR NEGATIVE EDGES AND THEREFORE IS A SCHEDULING GRAPH !\n")
+                dt.critical_path(self, dt.floats(self, display=True), display=True)
 
     # Allows to get a vertex of the graph from its name.
     def get_vertex(self, name):

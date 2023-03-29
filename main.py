@@ -14,6 +14,10 @@ def list_graphs():
 
 def file_opener(root_window):
     path = filedialog.askopenfilename(initialdir="./graphs", title="Select a File")
+    # Hides the tkinter window again
+    root_window.wm_attributes('-alpha', 0.0)
+    # Disables the tkinter windows' button again
+    root_window.wm_attributes('-disabled', True)
     return path
 
 
@@ -22,7 +26,7 @@ def main():
     root = tk.Tk()
     if 'linux' in sys.platform:
         root.withdraw()
-    else :
+    else:
         # Hides the tkinter window
         root.wm_attributes('-alpha', 0.0)
         # Disables the tkinter windows' button

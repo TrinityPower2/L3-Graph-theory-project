@@ -1,4 +1,3 @@
-import graph as gr
 from tabulate import tabulate
 
 
@@ -33,7 +32,7 @@ def get_ranks(g, display=False) -> list:
     ranks = []
     n = 0  # counter for the rank (if display)
     while len(predecessors) > 0:  # until no vertex is left
-        if display == True:
+        if display:
             print("\nRemaining vertices : ", predecessors)
 
         # acknoledge vertices that have no predecessors
@@ -50,7 +49,7 @@ def get_ranks(g, display=False) -> list:
                     predecessors[i].remove(td)  # delete useless edges
             del predecessors[td]  # delete vertex
 
-        if display == True:
+        if display:
             print("Vertices of rank ", n, " : ", ranks[-1])
             n += 1
 
@@ -182,7 +181,7 @@ def critical_path(g, floatd: list, display=False):
         paths_left -= 1
 
     if display:
-        g.logger.log("Critical Paths :")
+        g.logger.log("\nCritical Paths :")
         result = ""
         for path in paths:
             for vertex in path[:-1]:
