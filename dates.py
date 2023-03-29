@@ -143,12 +143,12 @@ def floats(g, display=False) -> list:
         values[1].insert(0, "Latest Dates")
         values[2].insert(0, "Floats")
 
-        print(tabulate(values, headers=col_headers, tablefmt="grid"))
+        g.logger.log(tabulate(values, headers=col_headers, tablefmt="grid"))
 
     return floatD
 
 
-def critical_path(g, floatd: list):
+def critical_path(g, floatd: list, display=False):
     # I assume it has been verified thig graph is schedulable (no loops)
     dict_floats = {}
 
@@ -181,11 +181,14 @@ def critical_path(g, floatd: list):
 
         paths_left -= 1
 
-    result = ""
-    for path in paths:
-        for vertex in path[:-1]:
-            result += vertex + '->'
-        result += path[-1]
-        result += '\n'
+    if display:
+        g.logger.log("Critical Paths :")
+        result = ""
+        for path in paths:
+            for vertex in path[:-1]:
+                result += vertex + '->'
+            result += path[-1]
+            result += '\n'
+        g.logger.log(result)
 
-    return result
+    return paths

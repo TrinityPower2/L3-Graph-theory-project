@@ -69,7 +69,7 @@ class Graph:
                 self.logger.log("THIS GRAPH CONTAINS NEGATIVE EDGES AND THEREFORE NOT A SCHEDULING GRAPH !")
             else:
                 self.logger.log("THIS CONTAINS NO CYCLE NOR NEGATIVE VALUES AND THEREFORE A SCHEDULING GRAPH !")
-                self.logger.log(dt.critical_path(self, dt.floats(self, display=True)))
+                dt.critical_path(self, dt.floats(self, display=True),display=True)
 
         print("\n(Press ENTER to return to menu)") # We don't really want that in the logs
         input()
