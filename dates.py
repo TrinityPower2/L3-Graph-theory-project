@@ -71,10 +71,10 @@ def earliest_dates(g, display=False) -> list:
             earliestD[vertex] = earliestD[predecessors[vertex][0]]
             earliestD[vertex] += int(g.adjacency_matrix[predecessors[vertex][0]][vertex])
             for p in predecessors[vertex][1:]:
-                if int(g.adjacency_matrix[p][vertex]) + earliestD[p] > earliestD[predecessors[vertex][0]]:
+                if int(g.adjacency_matrix[p][vertex]) + earliestD[p] > earliestD[vertex]:
                     earliestD[vertex] = int(g.adjacency_matrix[p][vertex]) + earliestD[p]
 
-    # print the tabulate version
+    # print the tabulated version
     if display:
         col_headers = [str(i) for i in range(len(earliestD))]
         col_headers[0] = "A"
