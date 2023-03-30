@@ -180,14 +180,25 @@ def critical_path(g, floatd: list, display=False):
 
         paths_left -= 1
 
+    # now we have to take only paths that have a total of values equal to the latest date of W
+
+    latest_date = latest_dates(g)[len(latest_dates(g)) - 1]
+    critical_paths = []
+    for path in paths:
+        total = 0
+        for vertex in path:
+            total += int(g.get_vertex(vertex).duration)
+        if total == latest_date:
+            critical_paths.append(path)
+
     if display:
         g.logger.log("\nCritical Paths :")
         result = ""
-        for path in paths:
+        for path in critical_paths:
             for vertex in path[:-1]:
                 result += vertex + '->'
             result += path[-1]
             result += '\n'
         g.logger.log(result)
 
-    return paths
+    return critical_paths
