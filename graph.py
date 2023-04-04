@@ -1,6 +1,8 @@
 import logger
 import vertex as vx
 from tabulate import tabulate
+from graphviz import Digraph
+
 import dates as dt
 import cycle_detection as cd
 import negative_edge_detection as nd
@@ -57,6 +59,9 @@ class Graph:
 
         self.adjacency_matrix = []
         self.compute_adjacency_matrix()
+
+        # We now plot the directed graph using the graphviz library.
+        self.plot_graph()
 
     # Loop that will persist while we are observing this graph. When we get out, the graph will be dropped.
     def graph_menu(self):
@@ -130,6 +135,23 @@ class Graph:
 
         # We return the table made by tabulate from the data and column headers.
         return tabulate(data, headers=col_headers, tablefmt="grid")
+
+
+    def plot_graph(self):
+        # We create the graphviz object
+        graph = Digraph(comment=self.graph_name)
+
+        # We add the vertices to the graph
+        for vertex in self.vertices:
+            graph.node(vertex.name, vertex.name + " (" + str(vertex.duration) + ")")
+
+        # We add the edges to the graph
+        for vertex in self.vertices:
+            for successor in vertex.successors:
+                graph.edge(vertex.name, successor.name, label=str(vertex.duration))
+
+        # We render the graph in the output folder
+        graph.render("output/" + self.graph_name, view=True)
 
 
 # Exception to manage cases when a vertex is not found.

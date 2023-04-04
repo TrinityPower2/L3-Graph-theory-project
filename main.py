@@ -42,6 +42,7 @@ def main():
             if user_input == "0":
                 print("Goodbye")
                 running = 0
+                break
             elif user_input == "1":
                 try:
                     active_graph = gr.Graph(open(file_opener(root), "r"))
