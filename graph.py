@@ -61,7 +61,7 @@ class Graph:
         self.compute_adjacency_matrix()
 
         # We now plot the directed graph using the graphviz library.
-        self.plot_graph()
+        self.graphic_plot()
 
     # Loop that will persist while we are observing this graph. When we get out, the graph will be dropped.
     def graph_menu(self):
@@ -137,7 +137,7 @@ class Graph:
         return tabulate(data, headers=col_headers, tablefmt="grid")
 
 
-    def plot_graph(self):
+    def graphic_plot(self):
         # We create the graphviz object
         graph = Digraph(comment=self.graph_name)
 
@@ -151,7 +151,33 @@ class Graph:
                 graph.edge(vertex.name, successor.name, label=str(vertex.duration))
 
         # We render the graph in the output folder
-        graph.render("output/" + self.graph_name, view=True)
+        graph.render("output/" + self.graph_name, view=True, format="png")
+
+    def graphic_plot_with_highlights(self, vertices_highlights, edges_highlights):
+        # Highlight is an array of vertices names that will be highlighted in the graph
+        # Edges highlights is an array of tuples (vertex1, vertex2) that will be highlighted in the graph
+
+        # We create the graphviz object
+        graph = Digraph(comment=self.graph_name)
+
+        # We add the vertices to the graph
+        for vertex in self.vertices:
+            if vertex.name in vertices_highlights:
+                graph.node(vertex.name, vertex.name + " (" + str(vertex.duration) + ")", color="red")
+            else:
+                graph.node(vertex.name, vertex.name + " (" + str(vertex.duration) + ")")
+
+        # We add the edges to the graph
+        for vertex in self.vertices:
+            for successor in vertex.successors:
+                if (vertex.name, successor.name) in edges_highlights:
+                    graph.edge(vertex.name, successor.name, label=str(vertex.duration), color="red")
+                else:
+                    graph.edge(vertex.name, successor.name, label=str(vertex.duration))
+
+        # We render the graph in the output folder
+        graph.render("output/" + self.graph_name + "_critical", view=True, format="png")
+
 
 
 # Exception to manage cases when a vertex is not found.

@@ -201,4 +201,20 @@ def critical_path(g, floatd: list, display=False):
             result += '\n'
         g.logger.log(result)
 
+        # now we create an array with every unique vertex in paths so we can send it to the graph with highlight
+        unique_vertices = []
+        for path in critical_paths:
+            for vertex in path:
+                if vertex not in unique_vertices:
+                    unique_vertices.append(vertex)
+
+        edges_to_highlight = []
+        for path in critical_paths:
+            for i in range(len(path)-1):
+                if (path[i], path[i+1]) not in edges_to_highlight:
+                    edges_to_highlight.append((path[i], path[i+1]))
+
+        g.graphic_plot_with_highlights(unique_vertices, edges_to_highlight)
+
+
     return critical_paths
