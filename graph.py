@@ -176,7 +176,7 @@ class Graph:
                     graph.edge(vertex.name, successor.name, label=str(vertex.duration))
 
         # We render the graph in the output folder
-        graph.render("output/" + self.graph_name + "_critical", view=True, format="png")
+        graph.render("output/" + self.graph_name + "_critical", view=False, format="png")
 
 
 
