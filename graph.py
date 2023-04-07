@@ -136,7 +136,6 @@ class Graph:
         # We return the table made by tabulate from the data and column headers.
         return tabulate(data, headers=col_headers, tablefmt="grid")
 
-
     def graphic_plot(self):
         # We create the graphviz object
         graph = Digraph(comment=self.graph_name)
@@ -177,7 +176,6 @@ class Graph:
 
         # We render the graph in the output folder
         graph.render("output/" + self.graph_name + "_critical", view=False, format="png")
-
 
 
 # Exception to manage cases when a vertex is not found.
