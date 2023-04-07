@@ -1,5 +1,5 @@
 from tabulate import tabulate
-
+from cycle_detection import has_cycle_plus_ranks
 
 def get_predecessors(g) -> dict:
     """
@@ -123,6 +123,7 @@ def floats(g, display=False) -> list:
     """
     Return the difference between latest dates and earliest_dates
     """
+    ranks = has_cycle_plus_ranks(g.adjacency_matrix, False)[1]
     latestD = latest_dates(g)
     earliestD = earliest_dates(g)
     floatD = []
@@ -137,10 +138,11 @@ def floats(g, display=False) -> list:
         col_headers[0] = "A"
         col_headers[-1] = "W"
         col_headers.insert(0, "")
-        values = [earliestD.copy(), latestD.copy(), floatD.copy()]
-        values[0].insert(0, "Earliest Dates")
-        values[1].insert(0, "Latest Dates")
-        values[2].insert(0, "Floats")
+        values = [ranks, earliestD.copy(), latestD.copy(), floatD.copy()]
+        values[0].insert(0, "Ranks")
+        values[1].insert(0, "Earliest Dates")
+        values[2].insert(0, "Latest Dates")
+        values[3].insert(0, "Floats")
 
         g.logger.log(tabulate(values, headers=col_headers, tablefmt="grid"))
 

@@ -6,12 +6,6 @@ import tkinter as tk
 from tkinter import filedialog
 
 
-def list_graphs():
-    print("\nAvailable files:\n")
-    for file in os.listdir("graphs/"):
-        print("- " + file.split(".")[0])
-
-
 def file_opener(root_window):
     path = filedialog.askopenfilename(initialdir="./graphs", title="Select a File")
     # Hides the tkinter window again
@@ -36,7 +30,8 @@ def main():
     while running:
         print("\nWhat action would you like to perform ?")
         print("0. Quit")
-        print("1. Import Graph\n")
+        print("1. Import Graph")
+        print("2. Grand Tour\n")
         while 1:
             user_input = input()
             if user_input == "0":
@@ -51,10 +46,25 @@ def main():
                     break
                 except gr.VertexNotFoundError:
                     print("A vertex was not found !")
+                    break
                 except FileNotFoundError:
                     print("Graph file not found !")
-            else:
-                print("Unknown action")
+                    break
+            elif user_input == "2":
+                print("\nPerforming Grand Tour of test files...")
+                for file in os.listdir("graphs/"):
+                    try:
+                        active_graph = gr.Graph(open("graphs/" + file, "r"), file.split(".")[0] == "table1")
+                        active_graph.graph_menu()
+                        del active_graph
+                    except gr.VertexNotFoundError:
+                        print("A vertex was not found !")
+                        break
+                    except FileNotFoundError:
+                        print("Graph file not found !")
+                        break
+
+                break
 
 
 if __name__ == '__main__':

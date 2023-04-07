@@ -10,7 +10,7 @@ import copy
 
 
 class Graph:
-    def __init__(self, file):
+    def __init__(self, file, display = True):
 
         self.graph_name = file.name.split("/")[-1].split(".")[0]
 
@@ -61,11 +61,12 @@ class Graph:
         self.compute_adjacency_matrix()
 
         # We now plot the directed graph using the graphviz library.
-        self.graphic_plot()
+        if display :
+            self.graphic_plot()
 
     # Loop that will persist while we are observing this graph. When we get out, the graph will be dropped.
-    def graph_menu(self):
-        self.logger.log("\n==============================")
+    def graph_menu(self, display = True):
+        self.logger.log("\n\n==============================")
         self.logger.log("\nCURRENT GRAPH : " + self.graph_name)
         self.logger.log(self.print_adjacency_matrix())
         if cd.has_cycle_plus_ranks(self.adjacency_matrix, True):
@@ -76,6 +77,7 @@ class Graph:
             else:
                 self.logger.log("\nTHIS CONTAINS NO CYCLE NOR NEGATIVE EDGES AND THEREFORE IS A SCHEDULING GRAPH !\n")
                 dt.critical_path(self, dt.floats(self, display=True), display=True)
+        self.logger.log("\n==============================\n\n")
 
     # Allows to get a vertex of the graph from its name.
     def get_vertex(self, name):
