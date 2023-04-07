@@ -139,45 +139,56 @@ class Graph:
         return tabulate(data, headers=col_headers, tablefmt="grid")
 
     def graphic_plot(self):
-        # We create the graphviz object
-        graph = Digraph(comment=self.graph_name)
 
-        # We add the vertices to the graph
-        for vertex in self.vertices:
-            graph.node(vertex.name, vertex.name + " (" + str(vertex.duration) + ")")
+        try:
+            # We create the graphviz object
+            graph = Digraph(comment=self.graph_name)
 
-        # We add the edges to the graph
-        for vertex in self.vertices:
-            for successor in vertex.successors:
-                graph.edge(vertex.name, successor.name, label=str(vertex.duration))
-
-        # We render the graph in the output folder
-        graph.render("output/" + self.graph_name, view=True, format="png")
-
-    def graphic_plot_with_highlights(self, vertices_highlights, edges_highlights):
-        # Highlight is an array of vertices names that will be highlighted in the graph
-        # Edges highlights is an array of tuples (vertex1, vertex2) that will be highlighted in the graph
-
-        # We create the graphviz object
-        graph = Digraph(comment=self.graph_name)
-
-        # We add the vertices to the graph
-        for vertex in self.vertices:
-            if vertex.name in vertices_highlights:
-                graph.node(vertex.name, vertex.name + " (" + str(vertex.duration) + ")", color="red")
-            else:
+            # We add the vertices to the graph
+            for vertex in self.vertices:
                 graph.node(vertex.name, vertex.name + " (" + str(vertex.duration) + ")")
 
-        # We add the edges to the graph
-        for vertex in self.vertices:
-            for successor in vertex.successors:
-                if (vertex.name, successor.name) in edges_highlights:
-                    graph.edge(vertex.name, successor.name, label=str(vertex.duration), color="red")
-                else:
+            # We add the edges to the graph
+            for vertex in self.vertices:
+                for successor in vertex.successors:
                     graph.edge(vertex.name, successor.name, label=str(vertex.duration))
 
-        # We render the graph in the output folder
-        graph.render("output/" + self.graph_name + "_critical", view=False, format="png")
+            # We render the graph in the output folder
+            graph.render("output/" + self.graph_name, view=True, format="png")
+
+        except Exception as e :
+            self.logger.log("Verify graphviz have been installed to export the graph as a picture : " + str(e))
+
+
+    def graphic_plot_with_highlights(self, vertices_highlights, edges_highlights):
+
+        try:
+            # Highlight is an array of vertices names that will be highlighted in the graph
+            # Edges highlights is an array of tuples (vertex1, vertex2) that will be highlighted in the graph
+
+            # We create the graphviz object
+            graph = Digraph(comment=self.graph_name)
+
+            # We add the vertices to the graph
+            for vertex in self.vertices:
+                if vertex.name in vertices_highlights:
+                    graph.node(vertex.name, vertex.name + " (" + str(vertex.duration) + ")", color="red")
+                else:
+                    graph.node(vertex.name, vertex.name + " (" + str(vertex.duration) + ")")
+
+            # We add the edges to the graph
+            for vertex in self.vertices:
+                for successor in vertex.successors:
+                    if (vertex.name, successor.name) in edges_highlights:
+                        graph.edge(vertex.name, successor.name, label=str(vertex.duration), color="red")
+                    else:
+                        graph.edge(vertex.name, successor.name, label=str(vertex.duration))
+
+            # We render the graph in the output folder
+            graph.render("output/" + self.graph_name + "_critical", view=False, format="png")
+
+        except Exception as e :
+            self.logger.log("Verify graphviz have been installed to export the graph as a picture : " + str(e))
 
 
 # Exception to manage cases when a vertex is not found.
