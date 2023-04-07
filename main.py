@@ -6,16 +6,8 @@ import tkinter as tk
 from tkinter import filedialog
 
 
-def file_opener(root_window):
-    path = filedialog.askopenfilename(initialdir="./graphs", title="Select a File")
-    # Hides the tkinter window again
-    root_window.wm_attributes('-alpha', 0.0)
-    # Disables the tkinter windows' button again
-    root_window.wm_attributes('-disabled', True)
-    return path
+def file_opener():
 
-
-def main():
     # Creates the tkinter window (necessary to summon the file selector)
     root = tk.Tk()
     if 'linux' in sys.platform:
@@ -25,6 +17,16 @@ def main():
         root.wm_attributes('-alpha', 0.0)
         # Disables the tkinter windows' button
         root.wm_attributes('-disabled', True)
+
+    path = filedialog.askopenfilename(initialdir="./graphs", title="Select a File")
+
+    # Closes the tkinter window
+    root.destroy()
+
+    return path
+
+
+def main():
 
     running = 1
     while running:
@@ -40,7 +42,7 @@ def main():
                 break
             elif user_input == "1":
                 try:
-                    active_graph = gr.Graph(open(file_opener(root), "r"))
+                    active_graph = gr.Graph(open(file_opener(), "r"))
                     active_graph.graph_menu()
                     del active_graph
                     break
