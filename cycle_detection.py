@@ -118,4 +118,4 @@ am = [['*', '0', '0', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*'],
       ['*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*'],
       ['*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*']]
 # print(has_cycle_plus_ranks(am, True))   # Without ranks
-print(has_cycle_plus_ranks(am, False))  # With ranks
+# print(has_cycle_plus_ranks(am, False))  # With ranks
