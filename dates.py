@@ -1,6 +1,7 @@
 from tabulate import tabulate
 from cycle_detection import has_cycle_plus_ranks
 
+
 def get_predecessors(g) -> dict:
     """
     Return a dictionnary of type {vertex: [predecessors], ...}
@@ -24,34 +25,22 @@ def get_predecessors(g) -> dict:
 def get_ranks(g, display=False) -> list:
     """
         Return a 2D list of vertices where the index is the rank\n
-        using Roy-Warshall algorithm
+        using Roy-Warshall algorithm from cycle_detection.py Has_cycle_plus_ranks function
         """
-    predecessors = get_predecessors(g)
-    n_vertices = len(g.adjacency_matrix)  # number of vertices
 
+    serial_ranks = has_cycle_plus_ranks(g.adjacency_matrix, False)[1]
     ranks = []
-    n = 0  # counter for the rank (if display)
-    while len(predecessors) > 0:  # until no vertex is left
-        if display:
-            print("\nRemaining vertices : ", predecessors)
+    for i in range(max(serial_ranks) + 1):
+        ranks.append([])
 
-        # acknoledge vertices that have no predecessors
-        toDelete = []
-        for v in predecessors.keys():
-            if len(predecessors[v]) == 0:
-                toDelete.append(v)
+    if display:
+        print("2D List is ready to be filled with vertices id : ", ranks)
 
-        ranks.append(toDelete)  # ranks
+    for i in range(len(serial_ranks)):
+        ranks[serial_ranks[i]].append(i)
 
-        for td in toDelete:
-            for i in range(n_vertices):
-                if g.adjacency_matrix[td][i] != '*':
-                    predecessors[i].remove(td)  # delete useless edges
-            del predecessors[td]  # delete vertex
-
-        if display:
-            print("Vertices of rank ", n, " : ", ranks[-1])
-            n += 1
+    if display:
+        print("2D List filled with vertices id : ", ranks)
 
     return ranks
 
@@ -212,11 +201,10 @@ def critical_path(g, floatd: list, display=False):
 
         edges_to_highlight = []
         for path in critical_paths:
-            for i in range(len(path)-1):
-                if (path[i], path[i+1]) not in edges_to_highlight:
-                    edges_to_highlight.append((path[i], path[i+1]))
+            for i in range(len(path) - 1):
+                if (path[i], path[i + 1]) not in edges_to_highlight:
+                    edges_to_highlight.append((path[i], path[i + 1]))
 
         g.graphic_plot_with_highlights(unique_vertices, edges_to_highlight)
-
 
     return critical_paths
