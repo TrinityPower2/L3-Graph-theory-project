@@ -1,14 +1,14 @@
 import copy
 
 
-def has_cycle_plus_ranks(AM, version: bool):
+def has_cycle_plus_ranks(adj_mat, version: bool):
     """
-    :param AM: the adjacency matrix (square string matrix)
+    :param adj_mat: the adjacency matrix (square string matrix)
     :param version: tells which version of the function use (the one with only cycle detection or the one with ranks)
     :return: either return a single boolean or a tuple containing a boolean and a dictionary containing the ranks
     """
 
-    AM_copy = copy.deepcopy(AM)     # Avoid to modify the matrix outside the function
+    AM_copy = copy.deepcopy(adj_mat)     # Avoid to modify the matrix outside the function
     # 1st version where we don't need to compute the ranks. It uses Roy Warshall algorithm
     if version:
         trans_clos = transition_closure_AM(AM_copy)      # We compute the transitive closure of the matrix
@@ -55,11 +55,11 @@ def has_cycle_plus_ranks(AM, version: bool):
             return True
 
 
-def get_column(AM, col_nb):         # return the column in the matrix of a given vertex
+def get_column(adj_mat, col_nb):         # return the column in the matrix of a given vertex
     col = []
-    matrix_len = len(AM)
+    matrix_len = len(adj_mat)
     for i in range(0, matrix_len):
-        col.append(AM[i][col_nb])
+        col.append(adj_mat[i][col_nb])
     return col
 
 
@@ -70,8 +70,8 @@ def is_zeros(col):                  # check if a given column has only zeros in 
     return True
 
 
-def transition_closure_AM(init_AM):      # compute the transitive closure of a given matrix
-    closure_AM = init_AM
+def transition_closure_AM(initial_adj_mat):      # compute the transitive closure of a given matrix
+    closure_AM = initial_adj_mat
     length = len(closure_AM)
     for i in range(0, length):
         predec = get_predecessors(closure_AM, i)
@@ -84,20 +84,20 @@ def transition_closure_AM(init_AM):      # compute the transitive closure of a g
     return closure_AM
 
 
-def get_predecessors(AM, vertice_nb):       # Get all the predecessors of a given vertex using a given matrix
-    length = len(AM)
+def get_predecessors(adj_mat, vertice_nb):       # Get all the predecessors of a given vertex using a given matrix
+    length = len(adj_mat)
     results = []
     for i in range(0, length):
-        if AM[i][vertice_nb] != '*':
+        if adj_mat[i][vertice_nb] != '*':
             results.append(i)
     return results
 
 
-def get_successors(AM, vertice_nb):         # Get all the successors of a given vertex using a given matrix
-    length = len(AM)
+def get_successors(adj_mat, vertice_nb):         # Get all the successors of a given vertex using a given matrix
+    length = len(adj_mat)
     results = []
     for i in range(0, length):
-        if AM[vertice_nb][i] != '*':
+        if adj_mat[vertice_nb][i] != '*':
             results.append(i)
     return results
 
