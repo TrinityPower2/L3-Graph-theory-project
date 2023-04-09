@@ -1,20 +1,20 @@
-import logger
-import vertex as vx
+import int1_2_logger
+import int1_2_vertex as vx
 from tabulate import tabulate
 from graphviz import Digraph
 
-import dates as dt
-import cycle_detection as cd
-import negative_edge_detection as nd
+import int1_2_dates as dt
+import int1_2_cycle_detection as cd
+import int1_2_negative_edge_detection as nd
 import copy
 
 
 class Graph:
-    def __init__(self, file):
+    def __init__(self, file, display=True):
 
         self.graph_name = file.name.split("/")[-1].split(".")[0]
 
-        self.logger = logger.Logger(self.graph_name)
+        self.logger = int1_2_logger.Logger(self.graph_name)
 
         # We will store the named vertices in the array, and store the matching predecessors in the dictionary.
         self.vertices = []
@@ -61,11 +61,11 @@ class Graph:
         self.compute_adjacency_matrix()
 
         # We now plot the directed graph using the graphviz library.
-        self.graphic_plot()
+        self.graphic_plot(display)
 
     # Loop that will persist while we are observing this graph. When we get out, the graph will be dropped.
     def graph_menu(self):
-        self.logger.log("\n==============================")
+        self.logger.log("\n\n==============================")
         self.logger.log("\nCURRENT GRAPH : " + self.graph_name)
         self.logger.log(self.print_adjacency_matrix())
         if cd.has_cycle_plus_ranks(self.adjacency_matrix, True):
@@ -76,6 +76,7 @@ class Graph:
             else:
                 self.logger.log("\nTHIS CONTAINS NO CYCLE NOR NEGATIVE EDGES AND THEREFORE IS A SCHEDULING GRAPH !\n")
                 dt.critical_path(self, dt.floats(self, display=True), display=True)
+        self.logger.log("\n==============================\n\n")
 
     # Allows to get a vertex of the graph from its name.
     def get_vertex(self, name):
@@ -136,46 +137,56 @@ class Graph:
         # We return the table made by tabulate from the data and column headers.
         return tabulate(data, headers=col_headers, tablefmt="grid")
 
-    def graphic_plot(self):
-        # We create the graphviz object
-        graph = Digraph(comment=self.graph_name)
+    def graphic_plot(self, display=True):
 
-        # We add the vertices to the graph
-        for vertex in self.vertices:
-            graph.node(vertex.name, vertex.name + " (" + str(vertex.duration) + ")")
+        try:
+            # We create the graphviz object
+            graph = Digraph(comment=self.graph_name)
 
-        # We add the edges to the graph
-        for vertex in self.vertices:
-            for successor in vertex.successors:
-                graph.edge(vertex.name, successor.name, label=str(vertex.duration))
-
-        # We render the graph in the output folder
-        graph.render("output/" + self.graph_name, view=True, format="png")
-
-    def graphic_plot_with_highlights(self, vertices_highlights, edges_highlights):
-        # Highlight is an array of vertices names that will be highlighted in the graph
-        # Edges highlights is an array of tuples (vertex1, vertex2) that will be highlighted in the graph
-
-        # We create the graphviz object
-        graph = Digraph(comment=self.graph_name)
-
-        # We add the vertices to the graph
-        for vertex in self.vertices:
-            if vertex.name in vertices_highlights:
-                graph.node(vertex.name, vertex.name + " (" + str(vertex.duration) + ")", color="red")
-            else:
+            # We add the vertices to the graph
+            for vertex in self.vertices:
                 graph.node(vertex.name, vertex.name + " (" + str(vertex.duration) + ")")
 
-        # We add the edges to the graph
-        for vertex in self.vertices:
-            for successor in vertex.successors:
-                if (vertex.name, successor.name) in edges_highlights:
-                    graph.edge(vertex.name, successor.name, label=str(vertex.duration), color="red")
-                else:
+            # We add the edges to the graph
+            for vertex in self.vertices:
+                for successor in vertex.successors:
                     graph.edge(vertex.name, successor.name, label=str(vertex.duration))
 
-        # We render the graph in the output folder
-        graph.render("output/" + self.graph_name + "_critical", view=False, format="png")
+            # We render the graph in the output folder
+            graph.render("output/" + self.graph_name, view=display, format="png")
+
+        except Exception as e:
+            self.logger.log("Verify graphviz have been installed to export the graph as a picture : " + str(e))
+
+    def graphic_plot_with_highlights(self, vertices_highlights, edges_highlights):
+
+        try:
+            # Highlight is an array of vertices names that will be highlighted in the graph
+            # Edges highlights is an array of tuples (vertex1, vertex2) that will be highlighted in the graph
+
+            # We create the graphviz object
+            graph = Digraph(comment=self.graph_name)
+
+            # We add the vertices to the graph
+            for vertex in self.vertices:
+                if vertex.name in vertices_highlights:
+                    graph.node(vertex.name, vertex.name + " (" + str(vertex.duration) + ")", color="red")
+                else:
+                    graph.node(vertex.name, vertex.name + " (" + str(vertex.duration) + ")")
+
+            # We add the edges to the graph
+            for vertex in self.vertices:
+                for successor in vertex.successors:
+                    if (vertex.name, successor.name) in edges_highlights:
+                        graph.edge(vertex.name, successor.name, label=str(vertex.duration), color="red")
+                    else:
+                        graph.edge(vertex.name, successor.name, label=str(vertex.duration))
+
+            # We render the graph in the output folder
+            graph.render("output/" + self.graph_name + "_critical", view=False, format="png")
+
+        except Exception as e:
+            self.logger.log("Verify graphviz have been installed to export the graph as a picture : " + str(e))
 
 
 # Exception to manage cases when a vertex is not found.

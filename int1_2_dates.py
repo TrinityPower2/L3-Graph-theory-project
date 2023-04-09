@@ -1,4 +1,5 @@
 from tabulate import tabulate
+from int1_2_cycle_detection import has_cycle_plus_ranks
 
 
 def get_predecessors(g) -> dict:
@@ -21,37 +22,25 @@ def get_predecessors(g) -> dict:
     return predecessors
 
 
-def get_ranks(g, display=False) -> list:
+def get_ranks_as_2dlist(g, display=False) -> list:
     """
         Return a 2D list of vertices where the index is the rank\n
-        using Roy-Warshall algorithm
+        using Roy-Warshall algorithm from int1_2_cycle_detection.py Has_cycle_plus_ranks function
         """
-    predecessors = get_predecessors(g)
-    n_vertices = len(g.adjacency_matrix)  # number of vertices
 
+    serial_ranks = has_cycle_plus_ranks(g.adjacency_matrix, False)[1]
     ranks = []
-    n = 0  # counter for the rank (if display)
-    while len(predecessors) > 0:  # until no vertex is left
-        if display:
-            print("\nRemaining vertices : ", predecessors)
+    for i in range(max(serial_ranks) + 1):
+        ranks.append([])
 
-        # acknoledge vertices that have no predecessors
-        toDelete = []
-        for v in predecessors.keys():
-            if len(predecessors[v]) == 0:
-                toDelete.append(v)
+    if display:
+        print("2D List is ready to be filled with vertices id : ", ranks)
 
-        ranks.append(toDelete)  # ranks
+    for i in range(len(serial_ranks)):
+        ranks[serial_ranks[i]].append(i)
 
-        for td in toDelete:
-            for i in range(n_vertices):
-                if g.adjacency_matrix[td][i] != '*':
-                    predecessors[i].remove(td)  # delete useless edges
-            del predecessors[td]  # delete vertex
-
-        if display:
-            print("Vertices of rank ", n, " : ", ranks[-1])
-            n += 1
+    if display:
+        print("2D List filled with vertices id : ", ranks)
 
     return ranks
 
@@ -60,7 +49,7 @@ def earliest_dates(g, display=False) -> list:
     """
     Return the duration to get to each vertex
     """
-    ranks = get_ranks(g)
+    ranks = get_ranks_as_2dlist(g)
     predecessors = get_predecessors(g)
     earliestD = {0: 0}
 
@@ -92,7 +81,7 @@ def latest_dates(g, display=False) -> list:
     earliestD = earliest_dates(g)
     w = len(g.adjacency_matrix) - 1  # number of vertex the W
     latestD = {w: earliestD[w]}
-    ranks = get_ranks(g)
+    ranks = get_ranks_as_2dlist(g)
 
     for r in range(len(ranks) - 1, -1, -1):  # loop from highest to lowest ranks
         for vertex in ranks[r]:
@@ -123,6 +112,7 @@ def floats(g, display=False) -> list:
     """
     Return the difference between latest dates and earliest_dates
     """
+    ranks = has_cycle_plus_ranks(g.adjacency_matrix, False)[1]
     latestD = latest_dates(g)
     earliestD = earliest_dates(g)
     floatD = []
@@ -137,10 +127,11 @@ def floats(g, display=False) -> list:
         col_headers[0] = "A"
         col_headers[-1] = "W"
         col_headers.insert(0, "")
-        values = [earliestD.copy(), latestD.copy(), floatD.copy()]
-        values[0].insert(0, "Earliest Dates")
-        values[1].insert(0, "Latest Dates")
-        values[2].insert(0, "Floats")
+        values = [ranks, earliestD.copy(), latestD.copy(), floatD.copy()]
+        values[0].insert(0, "Ranks")
+        values[1].insert(0, "Earliest Dates")
+        values[2].insert(0, "Latest Dates")
+        values[3].insert(0, "Floats")
 
         g.logger.log(tabulate(values, headers=col_headers, tablefmt="grid"))
 
@@ -182,7 +173,7 @@ def critical_path(g, floatd: list, display=False):
 
     # now we have to take only paths that have a total of values equal to the latest date of W
 
-    latest_date = latest_dates(g)[len(latest_dates(g)) - 1]
+    latest_date = latest_dates(g)[-1]
     critical_paths = []
     for path in paths:
         total = 0
@@ -210,11 +201,10 @@ def critical_path(g, floatd: list, display=False):
 
         edges_to_highlight = []
         for path in critical_paths:
-            for i in range(len(path)-1):
-                if (path[i], path[i+1]) not in edges_to_highlight:
-                    edges_to_highlight.append((path[i], path[i+1]))
+            for i in range(len(path) - 1):
+                if (path[i], path[i + 1]) not in edges_to_highlight:
+                    edges_to_highlight.append((path[i], path[i + 1]))
 
         g.graphic_plot_with_highlights(unique_vertices, edges_to_highlight)
-
 
     return critical_paths
