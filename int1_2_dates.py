@@ -1,5 +1,5 @@
 from tabulate import tabulate
-from cycle_detection import has_cycle_plus_ranks
+from int1_2_cycle_detection import has_cycle_plus_ranks
 
 
 def get_predecessors(g) -> dict:
@@ -25,7 +25,7 @@ def get_predecessors(g) -> dict:
 def get_ranks(g, display=False) -> list:
     """
         Return a 2D list of vertices where the index is the rank\n
-        using Roy-Warshall algorithm from cycle_detection.py Has_cycle_plus_ranks function
+        using Roy-Warshall algorithm from int1_2_cycle_detection.py Has_cycle_plus_ranks function
         """
 
     serial_ranks = has_cycle_plus_ranks(g.adjacency_matrix, False)[1]

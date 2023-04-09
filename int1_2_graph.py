@@ -1,11 +1,11 @@
-import logger
-import vertex as vx
+import int1_2_logger
+import int1_2_vertex as vx
 from tabulate import tabulate
 from graphviz import Digraph
 
-import dates as dt
-import cycle_detection as cd
-import negative_edge_detection as nd
+import int1_2_dates as dt
+import int1_2_cycle_detection as cd
+import int1_2_negative_edge_detection as nd
 import copy
 
 
@@ -14,7 +14,7 @@ class Graph:
 
         self.graph_name = file.name.split("/")[-1].split(".")[0]
 
-        self.logger = logger.Logger(self.graph_name)
+        self.logger = int1_2_logger.Logger(self.graph_name)
 
         # We will store the named vertices in the array, and store the matching predecessors in the dictionary.
         self.vertices = []

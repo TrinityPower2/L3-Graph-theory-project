@@ -1,6 +1,6 @@
 import os
 import sys
-import graph as gr
+import int1_2_graph as gr
 
 import tkinter as tk
 from tkinter import filedialog
