@@ -22,7 +22,7 @@ def get_predecessors(g) -> dict:
     return predecessors
 
 
-def get_ranks(g, display=False) -> list:
+def get_ranks_as_2dlist(g, display=False) -> list:
     """
         Return a 2D list of vertices where the index is the rank\n
         using Roy-Warshall algorithm from int1_2_cycle_detection.py Has_cycle_plus_ranks function
@@ -49,7 +49,7 @@ def earliest_dates(g, display=False) -> list:
     """
     Return the duration to get to each vertex
     """
-    ranks = get_ranks(g)
+    ranks = get_ranks_as_2dlist(g)
     predecessors = get_predecessors(g)
     earliestD = {0: 0}
 
@@ -81,7 +81,7 @@ def latest_dates(g, display=False) -> list:
     earliestD = earliest_dates(g)
     w = len(g.adjacency_matrix) - 1  # number of vertex the W
     latestD = {w: earliestD[w]}
-    ranks = get_ranks(g)
+    ranks = get_ranks_as_2dlist(g)
 
     for r in range(len(ranks) - 1, -1, -1):  # loop from highest to lowest ranks
         for vertex in ranks[r]:
