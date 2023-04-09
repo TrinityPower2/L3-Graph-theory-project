@@ -10,7 +10,7 @@ import copy
 
 
 class Graph:
-    def __init__(self, file, display = True):
+    def __init__(self, file, display=True):
 
         self.graph_name = file.name.split("/")[-1].split(".")[0]
 
@@ -61,11 +61,10 @@ class Graph:
         self.compute_adjacency_matrix()
 
         # We now plot the directed graph using the graphviz library.
-        if display :
-            self.graphic_plot()
+        self.graphic_plot(display)
 
     # Loop that will persist while we are observing this graph. When we get out, the graph will be dropped.
-    def graph_menu(self, display = True):
+    def graph_menu(self):
         self.logger.log("\n\n==============================")
         self.logger.log("\nCURRENT GRAPH : " + self.graph_name)
         self.logger.log(self.print_adjacency_matrix())
@@ -138,7 +137,7 @@ class Graph:
         # We return the table made by tabulate from the data and column headers.
         return tabulate(data, headers=col_headers, tablefmt="grid")
 
-    def graphic_plot(self):
+    def graphic_plot(self, display=True):
 
         try:
             # We create the graphviz object
@@ -154,11 +153,10 @@ class Graph:
                     graph.edge(vertex.name, successor.name, label=str(vertex.duration))
 
             # We render the graph in the output folder
-            graph.render("output/" + self.graph_name, view=True, format="png")
+            graph.render("output/" + self.graph_name, view=display, format="png")
 
-        except Exception as e :
+        except Exception as e:
             self.logger.log("Verify graphviz have been installed to export the graph as a picture : " + str(e))
-
 
     def graphic_plot_with_highlights(self, vertices_highlights, edges_highlights):
 
@@ -187,7 +185,7 @@ class Graph:
             # We render the graph in the output folder
             graph.render("output/" + self.graph_name + "_critical", view=False, format="png")
 
-        except Exception as e :
+        except Exception as e:
             self.logger.log("Verify graphviz have been installed to export the graph as a picture : " + str(e))
 
 

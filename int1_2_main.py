@@ -65,7 +65,7 @@ def main():
                     except FileNotFoundError:
                         print("Graph file not found !")
                         break
-
+                print("Grand Tour complete !")
                 break
 
 
