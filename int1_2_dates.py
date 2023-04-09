@@ -173,7 +173,7 @@ def critical_path(g, floatd: list, display=False):
 
     # now we have to take only paths that have a total of values equal to the latest date of W
 
-    latest_date = latest_dates(g)[len(latest_dates(g)) - 1]
+    latest_date = latest_dates(g)[-1]
     critical_paths = []
     for path in paths:
         total = 0
