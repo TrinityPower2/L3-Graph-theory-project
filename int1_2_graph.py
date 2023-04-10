@@ -8,6 +8,14 @@ import int1_2_cycle_detection as cd
 import int1_2_negative_edge_detection as nd
 import copy
 
+"""
+
+GRAPH THEORY PROJECT
+L3 - INT1 - Promo 2025 - Group 2
+BLAIS Angèle, BRUNIER Léna, CAPELLA Jean-Baptiste, CHRETIENNOT Noam, CRAIPEAU ANTOINE
+
+"""
+
 
 class Graph:
     def __init__(self, file, display=True):
@@ -141,7 +149,7 @@ class Graph:
 
         try:
             # We create the graphviz object
-            graph = Digraph(comment=self.graph_name)
+            graph = Digraph(comment= self.graph_name)
 
             # We add the vertices to the graph
             for vertex in self.vertices:
@@ -153,7 +161,7 @@ class Graph:
                     graph.edge(vertex.name, successor.name, label=str(vertex.duration))
 
             # We render the graph in the output folder
-            graph.render("output/" + self.graph_name, view=display, format="png")
+            graph.render("images/" + self.graph_name, view=display, format="png", cleanup=True)
 
         except Exception as e:
             self.logger.log("Verify graphviz have been installed to export the graph as a picture : " + str(e))
@@ -167,14 +175,14 @@ class Graph:
             # We create the graphviz object
             graph = Digraph(comment=self.graph_name)
 
-            # We add the vertices to the graph
+            # We add the vertices to the graph, and put the vertices to be highlighted in red
             for vertex in self.vertices:
                 if vertex.name in vertices_highlights:
                     graph.node(vertex.name, vertex.name + " (" + str(vertex.duration) + ")", color="red")
                 else:
                     graph.node(vertex.name, vertex.name + " (" + str(vertex.duration) + ")")
 
-            # We add the edges to the graph
+            # We add the edges to the graph, and put the edges to be highlighted in red
             for vertex in self.vertices:
                 for successor in vertex.successors:
                     if (vertex.name, successor.name) in edges_highlights:
@@ -183,7 +191,7 @@ class Graph:
                         graph.edge(vertex.name, successor.name, label=str(vertex.duration))
 
             # We render the graph in the output folder
-            graph.render("output/" + self.graph_name + "_critical", view=False, format="png")
+            graph.render("images/" + self.graph_name + "_critical", view=False, format="png", cleanup=True)
 
         except Exception as e:
             self.logger.log("Verify graphviz have been installed to export the graph as a picture : " + str(e))

@@ -5,6 +5,14 @@ import int1_2_graph as gr
 import tkinter as tk
 from tkinter import filedialog
 
+"""
+
+GRAPH THEORY PROJECT
+L3 - INT1 - Promo 2025 - Group 2
+BLAIS Angèle, BRUNIER Léna, CAPELLA Jean-Baptiste, CHRETIENNOT Noam, CRAIPEAU ANTOINE
+
+"""
+
 
 def file_opener():
 
@@ -32,8 +40,8 @@ def main():
     while running:
         print("\nWhat action would you like to perform ?")
         print("0. Quit")
-        print("1. Import Graph")
-        print("2. Grand Tour\n")
+        print("1. Import One Graph")
+        print("2. Compute All Graphs\n")
         while 1:
             user_input = input()
             if user_input == "0":

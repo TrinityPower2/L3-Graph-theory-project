@@ -1,5 +1,13 @@
 import copy     # Library containing the deepcopy function
 
+"""
+
+GRAPH THEORY PROJECT
+L3 - INT1 - Promo 2025 - Group 2
+BLAIS Angèle, BRUNIER Léna, CAPELLA Jean-Baptiste, CHRETIENNOT Noam, CRAIPEAU ANTOINE
+
+"""
+
 
 def has_cycle_plus_ranks(adj_mat, version: bool):
     """
@@ -100,4 +108,3 @@ def get_successors(adj_mat, vertice_nb):         # Get all the successors of a g
         if adj_mat[vertice_nb][i] != '*':
             results.append(i)
     return results
-
