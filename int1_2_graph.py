@@ -149,7 +149,7 @@ class Graph:
 
         try:
             # We create the graphviz object
-            graph = Digraph(comment= self.graph_name)
+            graph = Digraph(comment=self.graph_name)
 
             # We add the vertices to the graph
             for vertex in self.vertices:
